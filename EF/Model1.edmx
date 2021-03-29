@@ -1,0 +1,578 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Хранилище ClothesForHandsDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="History">
+          <Key>
+            <PropertyRef Name="IdHistory" />
+          </Key>
+          <Property Name="IdHistory" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdMaterial" Type="int" Nullable="false" />
+          <Property Name="Action" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OldValue" Type="int" />
+          <Property Name="NewValue" Type="int" Nullable="false" />
+          <Property Name="DateUpdate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Material">
+          <Key>
+            <PropertyRef Name="IdMaterial" />
+          </Key>
+          <Property Name="IdMaterial" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaterialName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdMaterialType" Type="int" Nullable="false" />
+          <Property Name="Image" Type="nvarchar" MaxLength="50" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="StockQTY" Type="int" Nullable="false" />
+          <Property Name="MinQTY" Type="int" Nullable="false" />
+          <Property Name="PackQTY" Type="int" Nullable="false" />
+          <Property Name="IdUnit" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="MaterialSupplier">
+          <Key>
+            <PropertyRef Name="IdMaterial" />
+            <PropertyRef Name="IdSupplier" />
+          </Key>
+          <Property Name="IdMaterial" Type="int" Nullable="false" />
+          <Property Name="IdSupplier" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MaterialType">
+          <Key>
+            <PropertyRef Name="IdMaterialType" />
+          </Key>
+          <Property Name="IdMaterialType" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaterialTypeName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Supplier">
+          <Key>
+            <PropertyRef Name="IdSupplier" />
+          </Key>
+          <Property Name="IdSupplier" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IdSupplierType" Type="int" Nullable="false" />
+          <Property Name="INN" Type="nchar" MaxLength="12" Nullable="false" />
+          <Property Name="Rating" Type="int" Nullable="false" />
+          <Property Name="DateStart" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SupplierType">
+          <Key>
+            <PropertyRef Name="IdSupplierType" />
+          </Key>
+          <Property Name="IdSupplierType" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SupplierTypeName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Unit">
+          <Key>
+            <PropertyRef Name="IdUnit" />
+          </Key>
+          <Property Name="IdUnit" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UnitName" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "ClothesForHandsDB.dbo.VW_MaterialDetails" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+        <EntityType Name="VW_MaterialDetails">
+          <Key>
+            <PropertyRef Name="Тип материала" />
+            <PropertyRef Name="Наименование материала" />
+            <PropertyRef Name="Количество материала на складе" />
+          </Key>
+          <Property Name="Тип материала" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Наименование материала" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Количество материала на складе" Type="int" Nullable="false" />
+          <Property Name="Количество поставщиков" Type="int" />
+          <Property Name="Текущая стоимость" Type="nvarchar" MaxLength="35" />
+          <Property Name="Описание" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <Association Name="FK_Material">
+          <End Role="Material" Type="Self.Material" Multiplicity="1" />
+          <End Role="MaterialSupplier" Type="Self.MaterialSupplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Material">
+              <PropertyRef Name="IdMaterial" />
+            </Principal>
+            <Dependent Role="MaterialSupplier">
+              <PropertyRef Name="IdMaterial" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MaterialType">
+          <End Role="MaterialType" Type="Self.MaterialType" Multiplicity="1" />
+          <End Role="Material" Type="Self.Material" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MaterialType">
+              <PropertyRef Name="IdMaterialType" />
+            </Principal>
+            <Dependent Role="Material">
+              <PropertyRef Name="IdMaterialType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Supplier">
+          <End Role="Supplier" Type="Self.Supplier" Multiplicity="1" />
+          <End Role="MaterialSupplier" Type="Self.MaterialSupplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Supplier">
+              <PropertyRef Name="IdSupplier" />
+            </Principal>
+            <Dependent Role="MaterialSupplier">
+              <PropertyRef Name="IdSupplier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SupplierType">
+          <End Role="SupplierType" Type="Self.SupplierType" Multiplicity="1" />
+          <End Role="Supplier" Type="Self.Supplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SupplierType">
+              <PropertyRef Name="IdSupplierType" />
+            </Principal>
+            <Dependent Role="Supplier">
+              <PropertyRef Name="IdSupplierType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Unit">
+          <End Role="Unit" Type="Self.Unit" Multiplicity="1" />
+          <End Role="Material" Type="Self.Material" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Unit">
+              <PropertyRef Name="IdUnit" />
+            </Principal>
+            <Dependent Role="Material">
+              <PropertyRef Name="IdUnit" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="Хранилище ClothesForHandsDBModelContainer">
+          <EntitySet Name="History" EntityType="Self.History" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Material" EntityType="Self.Material" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MaterialSupplier" EntityType="Self.MaterialSupplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MaterialType" EntityType="Self.MaterialType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Supplier" EntityType="Self.Supplier" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SupplierType" EntityType="Self.SupplierType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Unit" EntityType="Self.Unit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VW_MaterialDetails" EntityType="Self.VW_MaterialDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [VW_MaterialDetails].[Тип материала] AS [Тип материала], 
+    [VW_MaterialDetails].[Наименование материала] AS [Наименование материала], 
+    [VW_MaterialDetails].[Количество материала на складе] AS [Количество материала на складе], 
+    [VW_MaterialDetails].[Количество поставщиков] AS [Количество поставщиков], 
+    [VW_MaterialDetails].[Текущая стоимость] AS [Текущая стоимость], 
+    [VW_MaterialDetails].[Описание] AS [Описание]
+    FROM [dbo].[VW_MaterialDetails] AS [VW_MaterialDetails]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Material" Association="Self.FK_Material">
+            <End Role="Material" EntitySet="Material" />
+            <End Role="MaterialSupplier" EntitySet="MaterialSupplier" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MaterialType" Association="Self.FK_MaterialType">
+            <End Role="MaterialType" EntitySet="MaterialType" />
+            <End Role="Material" EntitySet="Material" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Supplier" Association="Self.FK_Supplier">
+            <End Role="Supplier" EntitySet="Supplier" />
+            <End Role="MaterialSupplier" EntitySet="MaterialSupplier" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SupplierType" Association="Self.FK_SupplierType">
+            <End Role="SupplierType" EntitySet="SupplierType" />
+            <End Role="Supplier" EntitySet="Supplier" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Unit" Association="Self.FK_Unit">
+            <End Role="Unit" EntitySet="Unit" />
+            <End Role="Material" EntitySet="Material" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ClothesForHandsDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(ClothesForHandsDBModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(ClothesForHandsDBModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="History" EntityType="ClothesForHandsDBModel.History" />
+          <EntitySet Name="Material" EntityType="ClothesForHandsDBModel.Material" />
+          <EntitySet Name="MaterialType" EntityType="ClothesForHandsDBModel.MaterialType" />
+          <EntitySet Name="Supplier" EntityType="ClothesForHandsDBModel.Supplier" />
+          <EntitySet Name="SupplierType" EntityType="ClothesForHandsDBModel.SupplierType" />
+          <EntitySet Name="sysdiagrams" EntityType="ClothesForHandsDBModel.sysdiagrams" />
+          <EntitySet Name="Unit" EntityType="ClothesForHandsDBModel.Unit" />
+          <EntitySet Name="VW_MaterialDetails" EntityType="ClothesForHandsDBModel.VW_MaterialDetails" />
+          <AssociationSet Name="FK_MaterialType" Association="ClothesForHandsDBModel.FK_MaterialType">
+            <End Role="MaterialType" EntitySet="MaterialType" />
+            <End Role="Material" EntitySet="Material" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Unit" Association="ClothesForHandsDBModel.FK_Unit">
+            <End Role="Unit" EntitySet="Unit" />
+            <End Role="Material" EntitySet="Material" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SupplierType" Association="ClothesForHandsDBModel.FK_SupplierType">
+            <End Role="SupplierType" EntitySet="SupplierType" />
+            <End Role="Supplier" EntitySet="Supplier" />
+          </AssociationSet>
+          <AssociationSet Name="MaterialSupplier" Association="ClothesForHandsDBModel.MaterialSupplier">
+            <End Role="Material" EntitySet="Material" />
+            <End Role="Supplier" EntitySet="Supplier" />
+          </AssociationSet>
+        </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="History">
+          <Key>
+            <PropertyRef Name="IdHistory" />
+          </Key>
+          <Property Name="IdHistory" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdMaterial" Type="Int32" Nullable="false" />
+          <Property Name="Action" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OldValue" Type="Int32" />
+          <Property Name="NewValue" Type="Int32" Nullable="false" />
+          <Property Name="DateUpdate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Material">
+          <Key>
+            <PropertyRef Name="IdMaterial" />
+          </Key>
+          <Property Name="IdMaterial" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaterialName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IdMaterialType" Type="Int32" Nullable="false" />
+          <Property Name="Image" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="StockQTY" Type="Int32" Nullable="false" />
+          <Property Name="MinQTY" Type="Int32" Nullable="false" />
+          <Property Name="PackQTY" Type="Int32" Nullable="false" />
+          <Property Name="IdUnit" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MaterialType" Relationship="ClothesForHandsDBModel.FK_MaterialType" FromRole="Material" ToRole="MaterialType" />
+          <NavigationProperty Name="Unit" Relationship="ClothesForHandsDBModel.FK_Unit" FromRole="Material" ToRole="Unit" />
+          <NavigationProperty Name="Supplier" Relationship="ClothesForHandsDBModel.MaterialSupplier" FromRole="Material" ToRole="Supplier" />
+        </EntityType>
+        <EntityType Name="MaterialType">
+          <Key>
+            <PropertyRef Name="IdMaterialType" />
+          </Key>
+          <Property Name="IdMaterialType" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaterialTypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Material" Relationship="ClothesForHandsDBModel.FK_MaterialType" FromRole="MaterialType" ToRole="Material" />
+        </EntityType>
+        <EntityType Name="Supplier">
+          <Key>
+            <PropertyRef Name="IdSupplier" />
+          </Key>
+          <Property Name="IdSupplier" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IdSupplierType" Type="Int32" Nullable="false" />
+          <Property Name="INN" Type="String" Nullable="false" MaxLength="12" FixedLength="true" Unicode="true" />
+          <Property Name="Rating" Type="Int32" Nullable="false" />
+          <Property Name="DateStart" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="SupplierType" Relationship="ClothesForHandsDBModel.FK_SupplierType" FromRole="Supplier" ToRole="SupplierType" />
+          <NavigationProperty Name="Material" Relationship="ClothesForHandsDBModel.MaterialSupplier" FromRole="Supplier" ToRole="Material" />
+        </EntityType>
+        <EntityType Name="SupplierType">
+          <Key>
+            <PropertyRef Name="IdSupplierType" />
+          </Key>
+          <Property Name="IdSupplierType" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SupplierTypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Supplier" Relationship="ClothesForHandsDBModel.FK_SupplierType" FromRole="SupplierType" ToRole="Supplier" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Unit">
+          <Key>
+            <PropertyRef Name="IdUnit" />
+          </Key>
+          <Property Name="IdUnit" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UnitName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Material" Relationship="ClothesForHandsDBModel.FK_Unit" FromRole="Unit" ToRole="Material" />
+        </EntityType>
+        <EntityType Name="VW_MaterialDetails">
+          <Key>
+            <PropertyRef Name="Тип_материала" />
+            <PropertyRef Name="Наименование_материала" />
+            <PropertyRef Name="Количество_материала_на_складе" />
+          </Key>
+          <Property Name="Тип_материала" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Наименование_материала" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Количество_материала_на_складе" Type="Int32" Nullable="false" />
+          <Property Name="Количество_поставщиков" Type="Int32" />
+          <Property Name="Текущая_стоимость" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="Описание" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_MaterialType">
+          <End Type="ClothesForHandsDBModel.MaterialType" Role="MaterialType" Multiplicity="1" />
+          <End Type="ClothesForHandsDBModel.Material" Role="Material" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MaterialType">
+              <PropertyRef Name="IdMaterialType" />
+            </Principal>
+            <Dependent Role="Material">
+              <PropertyRef Name="IdMaterialType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Unit">
+          <End Type="ClothesForHandsDBModel.Unit" Role="Unit" Multiplicity="1" />
+          <End Type="ClothesForHandsDBModel.Material" Role="Material" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Unit">
+              <PropertyRef Name="IdUnit" />
+            </Principal>
+            <Dependent Role="Material">
+              <PropertyRef Name="IdUnit" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SupplierType">
+          <End Type="ClothesForHandsDBModel.SupplierType" Role="SupplierType" Multiplicity="1" />
+          <End Type="ClothesForHandsDBModel.Supplier" Role="Supplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SupplierType">
+              <PropertyRef Name="IdSupplierType" />
+            </Principal>
+            <Dependent Role="Supplier">
+              <PropertyRef Name="IdSupplierType" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="MaterialSupplier">
+          <End Type="ClothesForHandsDBModel.Material" Role="Material" Multiplicity="*" />
+          <End Type="ClothesForHandsDBModel.Supplier" Role="Supplier" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище ClothesForHandsDBModelContainer" CdmEntityContainer="Entities">
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="Хранилище ClothesForHandsDBModel.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="Хранилище ClothesForHandsDBModel.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="Хранилище ClothesForHandsDBModel.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="Хранилище ClothesForHandsDBModel.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClothesForHandsDBModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="Хранилище ClothesForHandsDBModel.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ClothesForHandsDBModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="Хранилище ClothesForHandsDBModel.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="Хранилище ClothesForHandsDBModel.sp_upgraddiagrams" />
+          <EntitySetMapping Name="History">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.History">
+              <MappingFragment StoreEntitySet="History">
+                <ScalarProperty Name="DateUpdate" ColumnName="DateUpdate" />
+                <ScalarProperty Name="NewValue" ColumnName="NewValue" />
+                <ScalarProperty Name="OldValue" ColumnName="OldValue" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="IdMaterial" ColumnName="IdMaterial" />
+                <ScalarProperty Name="IdHistory" ColumnName="IdHistory" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Material">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.Material">
+              <MappingFragment StoreEntitySet="Material">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IdUnit" ColumnName="IdUnit" />
+                <ScalarProperty Name="PackQTY" ColumnName="PackQTY" />
+                <ScalarProperty Name="MinQTY" ColumnName="MinQTY" />
+                <ScalarProperty Name="StockQTY" ColumnName="StockQTY" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="IdMaterialType" ColumnName="IdMaterialType" />
+                <ScalarProperty Name="MaterialName" ColumnName="MaterialName" />
+                <ScalarProperty Name="IdMaterial" ColumnName="IdMaterial" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MaterialType">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.MaterialType">
+              <MappingFragment StoreEntitySet="MaterialType">
+                <ScalarProperty Name="MaterialTypeName" ColumnName="MaterialTypeName" />
+                <ScalarProperty Name="IdMaterialType" ColumnName="IdMaterialType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Supplier">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.Supplier">
+              <MappingFragment StoreEntitySet="Supplier">
+                <ScalarProperty Name="DateStart" ColumnName="DateStart" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="INN" ColumnName="INN" />
+                <ScalarProperty Name="IdSupplierType" ColumnName="IdSupplierType" />
+                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
+                <ScalarProperty Name="IdSupplier" ColumnName="IdSupplier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SupplierType">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.SupplierType">
+              <MappingFragment StoreEntitySet="SupplierType">
+                <ScalarProperty Name="SupplierTypeName" ColumnName="SupplierTypeName" />
+                <ScalarProperty Name="IdSupplierType" ColumnName="IdSupplierType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Unit">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.Unit">
+              <MappingFragment StoreEntitySet="Unit">
+                <ScalarProperty Name="UnitName" ColumnName="UnitName" />
+                <ScalarProperty Name="IdUnit" ColumnName="IdUnit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VW_MaterialDetails">
+            <EntityTypeMapping TypeName="ClothesForHandsDBModel.VW_MaterialDetails">
+              <MappingFragment StoreEntitySet="VW_MaterialDetails">
+                <ScalarProperty Name="Описание" ColumnName="Описание" />
+                <ScalarProperty Name="Текущая_стоимость" ColumnName="Текущая стоимость" />
+                <ScalarProperty Name="Количество_поставщиков" ColumnName="Количество поставщиков" />
+                <ScalarProperty Name="Количество_материала_на_складе" ColumnName="Количество материала на складе" />
+                <ScalarProperty Name="Наименование_материала" ColumnName="Наименование материала" />
+                <ScalarProperty Name="Тип_материала" ColumnName="Тип материала" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="MaterialSupplier" TypeName="ClothesForHandsDBModel.MaterialSupplier" StoreEntitySet="MaterialSupplier">
+            <EndProperty Name="Supplier">
+              <ScalarProperty Name="IdSupplier" ColumnName="IdSupplier" />
+            </EndProperty>
+            <EndProperty Name="Material">
+              <ScalarProperty Name="IdMaterial" ColumnName="IdMaterial" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

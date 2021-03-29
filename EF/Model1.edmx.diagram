@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1f4c130604a0440b8c24bf43e3fb023e" Name="Diagram1">
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.History" Width="1.5" PointX="5.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.Material" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.MaterialType" Width="1.5" PointX="0.75" PointY="2" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.Supplier" Width="1.5" PointX="5.25" PointY="1.5" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.SupplierType" Width="1.5" PointX="3" PointY="6" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.Unit" Width="1.5" PointX="0.75" PointY="6" />
+        <EntityTypeShape EntityType="ClothesForHandsDBModel.VW_MaterialDetails" Width="1.5" PointX="7.75" PointY="3.75" />
+        <AssociationConnector Association="ClothesForHandsDBModel.FK_MaterialType" />
+        <AssociationConnector Association="ClothesForHandsDBModel.FK_Unit" />
+        <AssociationConnector Association="ClothesForHandsDBModel.FK_SupplierType" />
+        <AssociationConnector Association="ClothesForHandsDBModel.MaterialSupplier" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
